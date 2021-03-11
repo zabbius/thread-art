@@ -15,7 +15,7 @@ import numpy
 
 def make_thread_art(image_path, on_next_line, pins_count=200, start_pin=None, lines_limit=3000,
                     dst_mul_start=1.0, dst_mul_end=1.0, eq_clip=1.0, pin_mul=0.5,
-                    max_radius=1000, scale=1.0, min_radius=200, debug=False, save_name=None):
+                    max_radius=1000, scale=1.0, min_radius=200, debug=False, save_name=None, save_every=100):
 
     src_image = skimage.io.imread(image_path, True)
 
@@ -99,7 +99,7 @@ def make_thread_art(image_path, on_next_line, pins_count=200, start_pin=None, li
 
         dst_image[best_line] = 0
 
-        if save_name and (line_count % 300) == 0:
+        if save_name and (line_count % save_every) == 0:
             skimage.io.imsave("{}_{:03d}.png".format(save_name, save_count), dst_image)
             save_count += 1
 
@@ -173,6 +173,7 @@ parser.add_argument("-v", "--preview", action='store_true', help="Image scale fa
 parser.add_argument("--preview-radius", default=500, help="Preview radius", type=int, dest='preview_radius')
 parser.add_argument("--debug", action='store_true', help="Debug using scikit plots", dest='debug')
 parser.add_argument("--save", default=None, help="Save previews", dest='save_name')
+parser.add_argument("--save-every", default=100, help="Save every N lines", dest='save_every')
 parser.add_argument("--dms", "--dst-mul-start", default=1.0, help="Destination multiplier start", dest='dst_mul_start', type=float)
 parser.add_argument("--dme", "--dst-mul-end", default=1.0, help="Destination multiplier end", dest='dst_mul_end', type=float)
 parser.add_argument("--eq-clip", default=1.0, help="Equalizer clip limit", dest='eq_clip', type=float)
@@ -193,6 +194,6 @@ make_thread_art(args.image, edge_handler.draw_edge,
                 pins_count=args.pins_count, lines_limit=args.lines_limit, start_pin=args.start_pin,
                 max_radius=args.max_radius, min_radius=args.min_radius, scale=args.scale, eq_clip=args.eq_clip,
                 dst_mul_start=args.dst_mul_start, dst_mul_end=args.dst_mul_end, pin_mul=args.pin_mul,
-                debug=args.debug, save_name=args.save_name)
+                debug=args.debug, save_name=args.save_name, save_every=args.save_every)
 
 edge_handler.done()
