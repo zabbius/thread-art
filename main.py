@@ -47,7 +47,7 @@ def make_thread_art(image_path, on_next_line, pins_count=200, threshold=15, star
         def process_pin(pin):
             line = skimage.draw.line(*pins[cur_pin], *pins[pin])
             yy, xx = line
-            avg_sum = sum(pixels[yy[i], xx[i]] for i in range(len(yy))) // len(yy)
+            avg_sum = sum(pixels[yy, xx]) // len(yy)
             return pin, avg_sum, line
 
         try_pins = (
@@ -100,7 +100,7 @@ class TurtlePreviewEdgeHandler:
         self.turtle.goto(*self.pins[pin2 - 1])
         self.turtle.update()
 
-        print(pin1, pin2)
+        print(pin1 + 1, pin2 + 1)
 
     def done(self):
         self.turtle.done()
@@ -108,7 +108,7 @@ class TurtlePreviewEdgeHandler:
 
 class StdOutEdgeHandler:
     def draw_edge(self, pin1, pin2):
-        print(pin1, pin2)
+        print(pin1 + 1, pin2 + 1)
 
     def done(self):
         pass
