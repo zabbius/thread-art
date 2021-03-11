@@ -87,13 +87,18 @@ def make_thread_art(image_path, on_next_line, pins_count=200, threshold=25, star
 
 
 class TurtlePreviewEdgeHandler:
-    def __init__(self, pins_count=200, radius=500):
+    def __init__(self, pins_count=200, radius=500, save_name=None):
         import turtle
         self.turtle = turtle
 
         self.turtle.tracer(False)
 
+        self.line_count = 0
+        self.frame_count = 0
+
         self.pins = []
+
+        self.save_name = save_name
 
         for n in range(pins_count):
             angle = math.pi / 2 - math.pi * 2 * n / pins_count
@@ -116,7 +121,21 @@ class TurtlePreviewEdgeHandler:
 
         print(score, pin1 + 1, pin2 + 1)
 
+        self.line_count += 1
+
+        if self.line_count % 100 == 0:
+            self.save()
+
+    def save(self):
+        if not self.save_name:
+            return
+
+        ts = self.turtle.getscreen()
+        ts.getcanvas().postscript(file="{:}_{:03d}.eps".format(self.save_name, self.frame_count))
+        self.frame_count += 1
+
     def done(self):
+        self.save()
         self.turtle.done()
 
 
@@ -139,6 +158,7 @@ parser.add_argument("-x", "--scale", default=1.0, help="Image scale factor", typ
 parser.add_argument("-v", "--preview", action='store_true', help="Image scale factor", dest='preview')
 parser.add_argument("--preview-radius", default=500, help="Preview radius", type=int, dest='preview_radius')
 parser.add_argument("--debug", action='store_true', help="Debug using scikit plots", dest='debug')
+parser.add_argument("--save", default=None, help="Save previews", dest='save_name')
 
 
 args = parser.parse_args()
@@ -146,7 +166,7 @@ args = parser.parse_args()
 edge_handler = None
 
 if args.preview:
-    edge_handler = TurtlePreviewEdgeHandler(pins_count=args.pins_count, radius=args.preview_radius)
+    edge_handler = TurtlePreviewEdgeHandler(pins_count=args.pins_count, radius=args.preview_radius, save_name=args.save_name)
 else:
     edge_handler = StdOutEdgeHandler()
 
