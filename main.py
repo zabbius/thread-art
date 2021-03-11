@@ -119,7 +119,7 @@ class TurtlePreviewEdgeHandler:
         self.turtle.goto(*self.pins[pin2 - 1])
         self.turtle.update()
 
-        print(score, pin1 + 1, pin2 + 1)
+        print(pin1 + 1, pin2 + 1)
 
         self.line_count += 1
 
@@ -141,7 +141,7 @@ class TurtlePreviewEdgeHandler:
 
 class StdOutEdgeHandler:
     def draw_edge(self, pin1, pin2, score):
-        print(score, pin1 + 1, pin2 + 1)
+        print(pin1 + 1, pin2 + 1)
 
     def done(self):
         pass
