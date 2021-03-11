@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import argparse
 import math
 from math import sin, cos
@@ -71,7 +72,7 @@ def make_thread_art(image_path, on_next_line, pins_count=200, threshold=15, star
         cur_pin = best_pin
 
 
-class TurtlePreview:
+class TurtlePreviewEdgeHandler:
     def __init__(self, pins_count=200, radius=500):
         import turtle
         self.turtle = turtle
@@ -99,8 +100,18 @@ class TurtlePreview:
         self.turtle.goto(*self.pins[pin2 - 1])
         self.turtle.update()
 
+        print(pin1, pin2)
+
     def done(self):
         self.turtle.done()
+
+
+class StdOutEdgeHandler:
+    def draw_edge(self, pin1, pin2):
+        print(pin1, pin2)
+
+    def done(self):
+        pass
 
 
 parser = argparse.ArgumentParser()
@@ -117,21 +128,16 @@ parser.add_argument("--preview-radius", default=500, help="Preview radius", type
 
 args = parser.parse_args()
 
-preview = None
+edge_handler = None
 
 if args.preview:
-    preview = TurtlePreview(pins_count=args.pins_count, radius=args.preview_radius)
-
-    def on_edge(p1, p2):
-        preview.draw_edge(p1, p2)
-        print(p1, p2)
+    edge_handler = TurtlePreviewEdgeHandler(pins_count=args.pins_count, radius=args.preview_radius)
 else:
-    def on_edge(p1, p2):
-        print(p1, p2)
+    edge_handler = StdOutEdgeHandler()
 
-make_thread_art(args.image, on_edge,
+
+make_thread_art(args.image, edge_handler.draw_edge,
                 pins_count=args.pins_count, threshold=args.threshold, start_pin=args.start_pin,
                 max_radius=args.max_radius, min_radius=args.min_radius, scale=args.scale)
 
-if args.preview:
-    preview.done()
+edge_handler.done()
