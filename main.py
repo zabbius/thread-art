@@ -14,7 +14,7 @@ import numpy
 
 
 def make_thread_art(image_path, on_next_line, pins_count=200, start_pin=None, lines_limit=3000,
-                    dst_mul_start=1.0, dst_mul_end=1.0, eq_clip=1.0, pin_mul=0.5,
+                    dst_mul_start=1.0, dst_mul_end=1.0, eq_clip=0.01, pin_mul=0.5,
                     max_radius=1000, scale=1.0, min_radius=200, debug=False, save_name=None, save_every=100):
 
     src_image = skimage.io.imread(image_path, True)
@@ -95,7 +95,7 @@ def make_thread_art(image_path, on_next_line, pins_count=200, start_pin=None, li
             print("{:.02f} ".format(dst_multiplier), end="")
 
         if on_next_line:
-            on_next_line(cur_pin, best_pin, best_score)
+            on_next_line(cur_pin, best_pin)
 
         dst_image[best_line] = 0
 
@@ -137,7 +137,7 @@ class TurtlePreviewEdgeHandler:
 
         self.turtle.update()
 
-    def draw_edge(self, pin1, pin2, score):
+    def draw_edge(self, pin1, pin2):
         self.turtle.pu()
         self.turtle.goto(*self.pins[pin1 - 1])
         self.turtle.pd()
@@ -176,7 +176,7 @@ parser.add_argument("--save", default=None, help="Save previews", dest='save_nam
 parser.add_argument("--save-every", default=100, help="Save every N lines", dest='save_every')
 parser.add_argument("--dms", "--dst-mul-start", default=1.0, help="Destination multiplier start", dest='dst_mul_start', type=float)
 parser.add_argument("--dme", "--dst-mul-end", default=1.0, help="Destination multiplier end", dest='dst_mul_end', type=float)
-parser.add_argument("--eq-clip", default=1.0, help="Equalizer clip limit", dest='eq_clip', type=float)
+parser.add_argument("--eq-clip", default=0.01, help="Equalizer clip limit", dest='eq_clip', type=float)
 parser.add_argument("--pm", "--pin-mul", default=0.5, help="Pin penalty multiplier", dest='pin_mul', type=float)
 
 
