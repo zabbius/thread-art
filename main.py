@@ -100,7 +100,11 @@ def make_thread_art(image_path, on_next_line, pins_count=200, start_pin=None, li
         dst_image[best_line] = 0
 
         if save_name and (line_count % save_every) == 0:
-            skimage.io.imsave("{}_{:03d}.png".format(save_name, save_count), dst_image)
+            x1 = center_x - radius
+            x2 = center_x + radius
+            y1 = center_y - radius
+            y2 = center_y + radius
+            skimage.io.imsave("{}_{:03d}.png".format(save_name, save_count), dst_image[y1:y2, x1:x2])
             save_count += 1
 
         if line_count >= lines_limit:
